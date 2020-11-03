@@ -1,21 +1,20 @@
 package com.example.demo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Message {
+  private final IStreamEvent history;
   private boolean isDeleted = false;
+  private String content = null;
 
-  public Message(List<IDomainEvent> history) {
-    history.stream().forEach(this::apply);
-    isDeleted = history.stream().anyMatch(o -> o instanceof MessageDeleted);
+  public Message(IStreamEvent history) {
+    this.history = history;
+    this.history.getEvents().forEach(this::apply);
   }
 
-  public static void quack(ArrayList<IDomainEvent> history, String content) {
+  public void quack(String content) {
     history.add(new MessageQuacked(content));
   }
 
-  public void delete(ArrayList<IDomainEvent> history) {
+  public void delete() {
     if(isDeleted){
       return;
     }
@@ -24,7 +23,11 @@ public class Message {
     history.add(messageDeleted);
   }
 
-  private void apply(IDomainEvent messageDeleted) {
-    isDeleted = true;
+  private void apply(INotifiyDomainEvent event) {
+    if(event instanceof MessageDeleted){
+      isDeleted = true;
+    }else if(event instanceof MessageQuacked){
+      content = ((MessageQuacked) event).getContent();
+    }
   }
 }
