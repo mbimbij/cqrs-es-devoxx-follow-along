@@ -2,32 +2,41 @@ package com.example.demo;
 
 public class Message {
   private final IStreamEvent history;
-  private boolean isDeleted = false;
   private String content = null;
+  private MessageIsDeletedProjection isDeletedProjection;
+  private MessageContentProjection messageContentProjection;
 
   public Message(IStreamEvent history) {
     this.history = history;
-    this.history.getEvents().forEach(this::apply);
+    this.isDeletedProjection = new MessageIsDeletedProjection();
+    this.messageContentProjection = new MessageContentProjection();
+    history.getEvents().forEach(event -> {
+      this.isDeletedProjection.apply(event);
+      this.messageContentProjection.apply(event);
+    });
   }
 
   public void quack(String content) {
-    history.add(new MessageQuacked(content));
+    MessageQuacked event = new MessageQuacked(content);
+    publishAndApply(event);
+  }
+
+  private void publishAndApply(MessageQuacked event) {
+    history.add(event);
+    messageContentProjection.apply(event);
   }
 
   public void delete() {
-    if(isDeleted){
+    if(isDeletedProjection.isDeleted()){
       return;
     }
     MessageDeleted messageDeleted = new MessageDeleted();
-    apply(messageDeleted);
-    history.add(messageDeleted);
+    publishAndApply(messageDeleted);
   }
 
-  private void apply(INotifiyDomainEvent event) {
-    if(event instanceof MessageDeleted){
-      isDeleted = true;
-    }else if(event instanceof MessageQuacked){
-      content = ((MessageQuacked) event).getContent();
-    }
+  private void publishAndApply(MessageDeleted messageDeleted) {
+    history.add(messageDeleted);
+    isDeletedProjection.apply(messageDeleted);
   }
+
 }
