@@ -1,16 +1,15 @@
 package com.example.demo;
 
 public class Message {
-  private final IStreamEvent history;
-  private String content = null;
   private MessageIsDeletedProjection isDeletedProjection;
   private MessageContentProjection messageContentProjection;
+  private IPublishEvents eventPublisher;
 
-  public Message(IStreamEvent history) {
-    this.history = history;
+  public Message(IStreamEvent eventStream, IPublishEvents eventPublisher) {
+    this.eventPublisher = eventPublisher;
     this.isDeletedProjection = new MessageIsDeletedProjection();
     this.messageContentProjection = new MessageContentProjection();
-    history.getEvents().forEach(event -> {
+    eventStream.getEvents().forEach(event -> {
       this.isDeletedProjection.apply(event);
       this.messageContentProjection.apply(event);
     });
@@ -22,7 +21,7 @@ public class Message {
   }
 
   private void publishAndApply(MessageQuacked event) {
-    history.add(event);
+    eventPublisher.publish(event);
     messageContentProjection.apply(event);
   }
 
@@ -35,7 +34,7 @@ public class Message {
   }
 
   private void publishAndApply(MessageDeleted messageDeleted) {
-    history.add(messageDeleted);
+    eventPublisher.publish(messageDeleted);
     isDeletedProjection.apply(messageDeleted);
   }
 

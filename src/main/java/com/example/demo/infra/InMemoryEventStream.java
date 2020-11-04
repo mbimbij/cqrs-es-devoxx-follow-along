@@ -1,4 +1,7 @@
-package com.example.demo;
+package com.example.demo.infra;
+
+import com.example.demo.INotifiyDomainEvent;
+import com.example.demo.IStreamEvent;
 
 import java.util.ArrayList;
 import java.util.List;

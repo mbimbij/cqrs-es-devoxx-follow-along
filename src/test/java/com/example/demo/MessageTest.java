@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.infra.EventBus;
+import com.example.demo.infra.InMemoryEventStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,53 +11,43 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageTest {
 
-  private InMemoryEventStream history;
+  private IPublishEvents eventPublisher;
+  private IStreamEvent eventStream;
   private Message message;
 
   @BeforeEach
   void setUp() {
-    history = new InMemoryEventStream();
-    message = new Message(history);
+    eventStream = new InMemoryEventStream();
+    eventPublisher = new EventBus(eventStream);
+    message = new Message(eventStream, eventPublisher);
   }
 
   @Test
   void shouldRaiseMessageQuack_whenQuackMessage() {
     message.quack("hello");
-    assertThat(history.getEvents()).containsExactly(new MessageQuacked("hello"));
+    assertThat(eventStream.getEvents()).containsExactly(new MessageQuacked("hello"));
   }
 
   @Test
   void shouldRaiseMessageDeleted_whenDelete() {
-    history.add(new MessageQuacked("hello"));
+    eventPublisher.publish(new MessageQuacked("hello"));
 
     message.delete();
 
-    assertThat(history.getEvents()).contains(new MessageDeleted());
-  }
-
-  @Test
-  void shouldNotRaiseMessageDeleted_whenMessageAlreadyDeleted() {
-    var history = new InMemoryEventStream();
-    history.add(new MessageDeleted());
-    var message = new Message(history);
-    history.add(new MessageQuacked("hello"));
-
-    message.delete();
-
-    assertThat(history).satisfies(history1 -> assertThat(countMessageDeleted(history1)).isEqualTo(1));
+    assertThat(eventStream.getEvents()).contains(new MessageDeleted());
   }
 
   private long countMessageDeleted(IStreamEvent streamEvent) {
-    return StreamSupport.stream(streamEvent.getEvents().spliterator(),false).filter(o -> o instanceof MessageDeleted).count();
+    return StreamSupport.stream(streamEvent.getEvents().spliterator(), false).filter(o -> o instanceof MessageDeleted).count();
   }
 
   @Test
   void shouldNotRaiseMessageDeletedEvent_whenDeleteTwice() {
-    history.add(new MessageQuacked("hello"));
+    message.quack("hello");
 
     message.delete();
     message.delete();
 
-    assertThat(history).satisfies(objects -> assertThat(countMessageDeleted(objects)).isEqualTo(1));
+    assertThat(eventStream).satisfies(objects -> assertThat(countMessageDeleted(objects)).isEqualTo(1));
   }
 }
