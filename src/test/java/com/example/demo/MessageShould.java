@@ -22,5 +22,17 @@ class MessageShould {
         assertThat(history).containsExactly(new MessageQuacked("hello"));
     }
 
+    @Test
+    void raiseMessageDeleted_whenDeleteMessage() {
+        // GIVEN
+        List<Object> history = new ArrayList<>();
+        history.add(new MessageQuacked("hello"));
+        Message message = new Message();
 
+        // WHEN
+        message.delete(history);
+
+        // THEN
+        assertThat(history).anyMatch(o -> o instanceof MessageDeleted);
+    }
 }
