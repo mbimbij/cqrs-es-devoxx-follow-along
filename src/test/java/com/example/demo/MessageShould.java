@@ -26,12 +26,27 @@ class MessageShould {
         // GIVEN
         List<Object> history = new ArrayList<>();
         history.add(new MessageQuacked("hello"));
-        Message message = new Message();
+        Message message = new Message(history);
 
         // WHEN
         message.delete(history);
 
         // THEN
         assertThat(history).anyMatch(o -> o instanceof MessageDeleted);
+    }
+
+    @Test
+    void notRaiseMessageDelete_whenMessageAlreadyDeleted() {
+        // GIVEN
+        List<Object> history = new ArrayList<>();
+        history.add(new MessageQuacked("hello"));
+        history.add(new MessageDeleted());
+        Message message = new Message(history);
+
+        // WHEN
+        message.delete(history);
+
+        // THEN
+        assertThat(history).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
     }
 }
