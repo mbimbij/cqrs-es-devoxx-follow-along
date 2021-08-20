@@ -1,30 +1,26 @@
 package com.example.demo;
 
 public class Message {
-    private boolean isDeleted = false;
+    private final DecisionProjection projection;
 
-    public Message(IStreamEvents eventsStream) {
-        for (Object event : eventsStream.getEvents()) {
-            if (event instanceof MessageDeleted) {
-                apply((MessageDeleted) event);
-            }
-        }
+    public Message(IStreamEvents history) {
+        projection = new DecisionProjection(history);
     }
 
-    private void apply(MessageDeleted messageDeleted) {
-        isDeleted = true;
+    public static void quack(IStreamEvents history, String content) {
+        history.add(new MessageQuacked(content));
     }
 
-    public static void quack(IStreamEvents eventsStream, String content) {
-        eventsStream.add(new MessageQuacked(content));
-    }
-
-    public void delete(IStreamEvents eventStream) {
-        if (isDeleted) {
+    public void delete(IStreamEvents history) {
+        if (projection.isDeleted()) {
             return;
         }
         MessageDeleted event = new MessageDeleted();
-        eventStream.add(event);
-        apply(event);
+        publishAndApply(history, event);
+    }
+
+    private void publishAndApply(IStreamEvents history, MessageDeleted event) {
+        history.add(event);
+        projection.apply(event);
     }
 }
