@@ -8,10 +8,13 @@ public class Message {
     public Message(List<Object> history) {
         for (Object event : history) {
             if (event instanceof MessageDeleted) {
-                isDeleted = true;
-                break;
+                apply((MessageDeleted) event);
             }
         }
+    }
+
+    private void apply(MessageDeleted messageDeleted) {
+        isDeleted = true;
     }
 
     public static void quack(List<Object> history, String content) {
@@ -22,6 +25,8 @@ public class Message {
         if (isDeleted) {
             return;
         }
-        history.add(new MessageDeleted());
+        MessageDeleted event = new MessageDeleted();
+        history.add(event);
+        apply(event);
     }
 }

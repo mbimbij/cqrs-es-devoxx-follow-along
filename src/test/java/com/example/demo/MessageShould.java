@@ -49,4 +49,19 @@ class MessageShould {
         // THEN
         assertThat(history).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
     }
+
+    @Test
+    void notRaiseMessageDeleted_whenCallDeleteMessageTwice() {
+        // GIVEN
+        List<Object> history = new ArrayList<>();
+        history.add(new MessageQuacked("hello"));
+        Message message = new Message(history);
+
+        // WHEN
+        message.delete(history);
+        message.delete(history);
+
+        // THEN
+        assertThat(history).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
+    }
 }
