@@ -2,14 +2,11 @@ package com.example.demo;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageShould {
 
-    private final List<IDomainEvent> history = new ArrayList<>();
+    private final IStreamEvents history = new InMemoryStreamEvents();
 
     @Test
     void raiseMessageQuacked_whenQuackMessage() {
@@ -17,7 +14,7 @@ class MessageShould {
         Message.quack(history, "hello");
 
         // THEN
-        assertThat(history).containsExactly(new MessageQuacked("hello"));
+        assertThat(history.getEvents()).containsExactly(new MessageQuacked("hello"));
     }
 
     @Test
@@ -30,7 +27,7 @@ class MessageShould {
         message.delete(history);
 
         // THEN
-        assertThat(history).anyMatch(o -> o instanceof MessageDeleted);
+        assertThat(history.getEvents()).anyMatch(o -> o instanceof MessageDeleted);
     }
 
     @Test
@@ -44,7 +41,7 @@ class MessageShould {
         message.delete(history);
 
         // THEN
-        assertThat(history).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
+        assertThat(history.getEvents()).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
     }
 
     @Test
@@ -58,6 +55,6 @@ class MessageShould {
         message.delete(history);
 
         // THEN
-        assertThat(history).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
+        assertThat(history.getEvents()).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
     }
 }
