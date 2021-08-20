@@ -36,7 +36,7 @@ class MessageShould {
     }
 
     @Test
-    void notRaiseMessageDelete_whenMessageAlreadyDeleted() {
+    void notRaiseMessageDeleted_whenMessageAlreadyDeleted() {
         // GIVEN
         List<Object> history = new ArrayList<>();
         history.add(new MessageQuacked("hello"));
