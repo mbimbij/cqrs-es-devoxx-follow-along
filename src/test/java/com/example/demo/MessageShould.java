@@ -9,11 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageShould {
 
+    private final List<IDomainEvent> history = new ArrayList<>();
+
     @Test
     void raiseMessageQuacked_whenQuackMessage() {
-        // GIVEN
-        List<Object> history = new ArrayList<>();
-
         // WHEN
         Message.quack(history, "hello");
 
@@ -24,7 +23,6 @@ class MessageShould {
     @Test
     void raiseMessageDeleted_whenDeleteMessage() {
         // GIVEN
-        List<Object> history = new ArrayList<>();
         history.add(new MessageQuacked("hello"));
         Message message = new Message(history);
 
@@ -38,7 +36,6 @@ class MessageShould {
     @Test
     void notRaiseMessageDeleted_whenMessageAlreadyDeleted() {
         // GIVEN
-        List<Object> history = new ArrayList<>();
         history.add(new MessageQuacked("hello"));
         history.add(new MessageDeleted());
         Message message = new Message(history);
@@ -53,7 +50,6 @@ class MessageShould {
     @Test
     void notRaiseMessageDeleted_whenCallDeleteMessageTwice() {
         // GIVEN
-        List<Object> history = new ArrayList<>();
         history.add(new MessageQuacked("hello"));
         Message message = new Message(history);
 

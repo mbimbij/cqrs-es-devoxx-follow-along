@@ -1,4 +1,4 @@
 package com.example.demo;
 
-public class MessageDeleted {
+public class MessageDeleted implements IDomainEvent {
 }
