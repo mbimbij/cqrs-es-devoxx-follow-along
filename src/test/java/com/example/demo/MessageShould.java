@@ -13,10 +13,9 @@ class MessageShould {
     void raiseMessageQuacked_whenQuackMessage() {
         // GIVEN
         List<Object> history = new ArrayList<>();
-        Message message = new Message();
 
         // WHEN
-        message.quack(history, "hello");
+        Message.quack(history, "hello");
 
         // THEN
         assertThat(history).containsExactly(new MessageQuacked("hello"));
