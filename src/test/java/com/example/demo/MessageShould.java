@@ -18,4 +18,16 @@ class MessageShould {
         assertThat(eventPublisher.getEvents()).containsExactly(new MessageQuacked("hello"));
     }
 
+    @Test
+    void raiseMessageDeleted_whenDeleteMessage() {
+        // GIVEN
+        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher();
+        Message message = new Message();
+
+        // WHEN
+        message.delete(eventPublisher);
+
+        // THEN
+        assertThat(eventPublisher.getEvents()).filteredOn(domainEvent -> domainEvent instanceof MessageDeleted).hasSize(1);
+    }
 }
