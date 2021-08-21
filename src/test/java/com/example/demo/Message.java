@@ -1,7 +1,7 @@
 package com.example.demo;
 
 public class Message {
-    private boolean isDeleted = false;
+    private IsMessageDeletedProjection deletionProjection = new IsMessageDeletedProjection();
 
     public Message() {
     }
@@ -9,13 +9,9 @@ public class Message {
     public Message(AggregatePastEvents pastAggregatePastEvents) {
         pastAggregatePastEvents.getEvents().forEach(pastEvent -> {
             if (pastEvent instanceof MessageDeleted) {
-                apply((MessageDeleted) pastEvent);
+                deletionProjection.apply((MessageDeleted) pastEvent);
             }
         });
-    }
-
-    private void apply(MessageDeleted pastEvent) {
-        isDeleted = true;
     }
 
     public static void quack(IPublishEvent eventPublisher, String content) {
@@ -23,10 +19,10 @@ public class Message {
     }
 
     public void delete(IPublishEvent eventPublisher) {
-        if (!isDeleted) {
+        if (!deletionProjection.isDeleted()) {
             MessageDeleted event = new MessageDeleted();
             eventPublisher.publish(event);
-            apply(event);
+            deletionProjection.apply(event);
         }
     }
 }
