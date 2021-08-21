@@ -17,4 +17,17 @@ public class QuackCounterShould {
         // THEN
         assertThat(quackCounter.getValue()).isEqualTo(1);
     }
+
+    @Test
+    void decrement_whenMessageDeleted() {
+        // GIVEN
+        QuackCounter quackCounter = new QuackCounter();
+        quackCounter.handle(new MessageQuacked("hello"));
+
+        // WHEN
+        quackCounter.handle(new MessageDeleted());
+
+        // THEN
+        assertThat(quackCounter.getValue()).isEqualTo(0);
+    }
 }

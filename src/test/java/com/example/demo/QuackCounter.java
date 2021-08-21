@@ -10,4 +10,8 @@ public class QuackCounter {
     public int getValue() {
         return value;
     }
+
+    public void handle(MessageDeleted messageDeleted) {
+        value--;
+    }
 }
