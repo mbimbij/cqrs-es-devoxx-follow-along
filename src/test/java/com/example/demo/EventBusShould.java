@@ -3,6 +3,8 @@ package com.example.demo;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class EventBusShould {
     @Test
@@ -16,5 +18,25 @@ public class EventBusShould {
 
         // THEN
         assertThat(eventStream.getEvents()).contains(new MessageQuacked("hello"));
+    }
+
+    @Test
+    void callEachHandler_whenPublish() {
+        // GIVEN
+        EventBus eventBus = new EventBus(new InMemoryStreamEvents());
+        MessageQuackedSubscriber messageQuackedEventSubscriber1 = spy(new MessageQuackedSubscriber());
+        MessageQuackedSubscriber messageQuackedEventSubscriber2 = spy(new MessageQuackedSubscriber());
+        MessageDeletedSubscriber messageDeletedEventSubscriber = spy(new MessageDeletedSubscriber());
+        eventBus.subscribe(messageQuackedEventSubscriber1);
+        eventBus.subscribe(messageQuackedEventSubscriber2);
+        eventBus.subscribe(messageDeletedEventSubscriber);
+
+        // WHEN
+        eventBus.publish(new MessageQuacked("hello"));
+
+        // THEN
+        verify(messageQuackedEventSubscriber1).handle(any(MessageQuacked.class));
+        verify(messageQuackedEventSubscriber2).handle(any(MessageQuacked.class));
+        verify(messageDeletedEventSubscriber, never()).handle(any(MessageDeleted.class));
     }
 }
