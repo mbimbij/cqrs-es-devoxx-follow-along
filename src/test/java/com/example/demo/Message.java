@@ -9,9 +9,13 @@ public class Message {
     public Message(AggregatePastEvents pastAggregatePastEvents) {
         pastAggregatePastEvents.getEvents().forEach(pastEvent -> {
             if (pastEvent instanceof MessageDeleted) {
-                isDeleted = true;
+                apply((MessageDeleted) pastEvent);
             }
         });
+    }
+
+    private void apply(MessageDeleted pastEvent) {
+        isDeleted = true;
     }
 
     public static void quack(IPublishEvent eventPublisher, String content) {
@@ -20,7 +24,9 @@ public class Message {
 
     public void delete(IPublishEvent eventPublisher) {
         if (!isDeleted) {
-            eventPublisher.publish(new MessageDeleted());
+            MessageDeleted event = new MessageDeleted();
+            eventPublisher.publish(event);
+            apply(event);
         }
     }
 }
