@@ -26,8 +26,24 @@ class MessageShould {
         // GIVEN
         List<DomainEvent> events = new ArrayList<>();
         events.add(new MessageQuacked("hello"));
-        InMemoryEventStream eventPublisher = new InMemoryEventStream();
-        Message message = new Message();
+        InMemoryEventStream eventPublisher = new InMemoryEventStream(events);
+        Message message = new Message(events);
+
+        // WHEN
+        message.delete(eventPublisher);
+
+        // THEN
+        assertThat(eventPublisher.getEvents()).filteredOn(domainEvent -> domainEvent instanceof MessageDeleted).hasSize(1);
+    }
+
+    @Test
+    void notRaiseMessageDelete_whenMessageAlreadyDeleted() {
+        // GIVEN
+        List<DomainEvent> events = new ArrayList<>();
+        events.add(new MessageQuacked("hello"));
+        events.add(new MessageDeleted());
+        InMemoryEventStream eventPublisher = new InMemoryEventStream(events);
+        Message message = new Message(events);
 
         // WHEN
         message.delete(eventPublisher);
