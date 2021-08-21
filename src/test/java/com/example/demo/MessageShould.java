@@ -24,10 +24,11 @@ class MessageShould {
     @Test
     void raiseMessageDeleted_whenDeleteMessage() {
         // GIVEN
-        List<DomainEvent> events = new ArrayList<>();
-        events.add(new MessageQuacked("hello"));
-        InMemoryEventStream eventPublisher = new InMemoryEventStream(events);
-        Message message = new Message(events);
+        List<DomainEvent> eventsList = new ArrayList<>();
+        eventsList.add(new MessageQuacked("hello"));
+        InMemoryEventStream eventPublisher = new InMemoryEventStream(eventsList);
+        AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
+        Message message = new Message(aggregatePastEvents);
 
         // WHEN
         message.delete(eventPublisher);
@@ -39,11 +40,12 @@ class MessageShould {
     @Test
     void notRaiseMessageDelete_whenMessageAlreadyDeleted() {
         // GIVEN
-        List<DomainEvent> events = new ArrayList<>();
-        events.add(new MessageQuacked("hello"));
-        events.add(new MessageDeleted());
-        InMemoryEventStream eventPublisher = new InMemoryEventStream(events);
-        Message message = new Message(events);
+        List<DomainEvent> eventsList = new ArrayList<>();
+        eventsList.add(new MessageQuacked("hello"));
+        eventsList.add(new MessageDeleted());
+        InMemoryEventStream eventPublisher = new InMemoryEventStream(eventsList);
+        AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
+        Message message = new Message(aggregatePastEvents);
 
         // WHEN
         message.delete(eventPublisher);
