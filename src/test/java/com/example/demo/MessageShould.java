@@ -9,7 +9,7 @@ class MessageShould {
     @Test
     void raiseMessageQuacked_whenQuackMessage() {
         // GIVEN
-        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher();
+        InMemoryEventStream eventPublisher = new InMemoryEventStream();
 
         // WHEN
         Message.quack(eventPublisher, "hello");
@@ -21,7 +21,7 @@ class MessageShould {
     @Test
     void raiseMessageDeleted_whenDeleteMessage() {
         // GIVEN
-        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher();
+        InMemoryEventStream eventPublisher = new InMemoryEventStream();
         Message message = new Message();
 
         // WHEN
