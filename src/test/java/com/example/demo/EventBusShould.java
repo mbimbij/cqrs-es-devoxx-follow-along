@@ -23,16 +23,16 @@ public class EventBusShould {
     @Test
     void callEachHandler_whenPublish() {
         // GIVEN
-        EventBus eventBus = new EventBus(new InMemoryStreamEvents());
+        IPublishEvent eventPublisher = new EventBus(new InMemoryStreamEvents());
         MessageQuackedSubscriber messageQuackedEventSubscriber1 = spy(new MessageQuackedSubscriber());
         MessageQuackedSubscriber messageQuackedEventSubscriber2 = spy(new MessageQuackedSubscriber());
         MessageDeletedSubscriber messageDeletedEventSubscriber = spy(new MessageDeletedSubscriber());
-        eventBus.subscribe(messageQuackedEventSubscriber1);
-        eventBus.subscribe(messageQuackedEventSubscriber2);
-        eventBus.subscribe(messageDeletedEventSubscriber);
+        eventPublisher.subscribe(messageQuackedEventSubscriber1);
+        eventPublisher.subscribe(messageQuackedEventSubscriber2);
+        eventPublisher.subscribe(messageDeletedEventSubscriber);
 
         // WHEN
-        eventBus.publish(new MessageQuacked("hello"));
+        eventPublisher.publish(new MessageQuacked("hello"));
 
         // THEN
         verify(messageQuackedEventSubscriber1).handle(any(MessageQuacked.class));

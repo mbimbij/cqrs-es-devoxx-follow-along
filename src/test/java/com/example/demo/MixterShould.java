@@ -1,19 +1,19 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MixterShould {
     @Test
-    @Disabled
     void displayMessageInTimeline_whenQuackMessage() {
         // GIVEN
+        IPublishEvent eventPublisher = new EventBus(new InMemoryStreamEvents());
         Timeline timeline = new Timeline();
+        eventPublisher.subscribe(timeline);
 
         // WHEN
-        Message.quack(new InMemoryStreamEvents(), "hello");
+        Message.quack(eventPublisher, "hello");
 
         // THEN
         assertThat(timeline.getMessages()).containsExactly(new TimelineMessage("hello"));

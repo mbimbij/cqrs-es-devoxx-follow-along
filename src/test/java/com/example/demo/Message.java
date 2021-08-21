@@ -7,20 +7,20 @@ public class Message {
         projection = new DecisionProjection(history);
     }
 
-    public static void quack(IStreamEvents history, String content) {
-        history.add(new MessageQuacked(content));
+    public static void quack(IPublishEvent eventPublisher, String content) {
+        eventPublisher.publish(new MessageQuacked(content));
     }
 
-    public void delete(IStreamEvents history) {
+    public void delete(IPublishEvent eventPublisher) {
         if (projection.isDeleted()) {
             return;
         }
         MessageDeleted event = new MessageDeleted();
-        publishAndApply(history, event);
+        publishAndApply(eventPublisher, event);
     }
 
-    private void publishAndApply(IStreamEvents history, MessageDeleted event) {
-        history.add(event);
+    private void publishAndApply(IPublishEvent eventPublisher, MessageDeleted event) {
+        eventPublisher.publish(event);
         projection.apply(event);
     }
 }

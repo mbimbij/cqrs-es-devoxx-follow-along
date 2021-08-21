@@ -1,17 +1,25 @@
 package com.example.demo;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageShould {
 
-    private final IStreamEvents history = new InMemoryStreamEvents();
+    private IStreamEvents history;
+    private IPublishEvent eventPublisher;
+
+    @BeforeEach
+    void setUp() {
+        history = new InMemoryStreamEvents();
+        eventPublisher = new EventBus(history);
+    }
 
     @Test
     void raiseMessageQuacked_whenQuackMessage() {
         // WHEN
-        Message.quack(history, "hello");
+        Message.quack(eventPublisher, "hello");
 
         // THEN
         assertThat(history.getEvents()).containsExactly(new MessageQuacked("hello"));
@@ -24,7 +32,7 @@ class MessageShould {
         Message message = new Message(history);
 
         // WHEN
-        message.delete(history);
+        message.delete(eventPublisher);
 
         // THEN
         assertThat(history.getEvents()).anyMatch(o -> o instanceof MessageDeleted);
@@ -38,7 +46,7 @@ class MessageShould {
         Message message = new Message(history);
 
         // WHEN
-        message.delete(history);
+        message.delete(eventPublisher);
 
         // THEN
         assertThat(history.getEvents()).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
@@ -51,8 +59,8 @@ class MessageShould {
         Message message = new Message(history);
 
         // WHEN
-        message.delete(history);
-        message.delete(history);
+        message.delete(eventPublisher);
+        message.delete(eventPublisher);
 
         // THEN
         assertThat(history.getEvents()).filteredOn(event -> event instanceof MessageDeleted).hasSize(1);
