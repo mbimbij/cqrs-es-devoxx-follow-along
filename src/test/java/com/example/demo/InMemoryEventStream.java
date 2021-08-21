@@ -3,7 +3,7 @@ package com.example.demo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryStreamEvents implements IStreamEvents {
+public class InMemoryEventStream implements IStreamEvents {
     private List<DomainEvent> events = new ArrayList<>();
 
     @Override

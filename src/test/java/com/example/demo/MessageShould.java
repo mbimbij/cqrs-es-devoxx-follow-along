@@ -12,7 +12,7 @@ class MessageShould {
 
     @BeforeEach
     void setUp() {
-        history = new InMemoryStreamEvents();
+        history = new InMemoryEventStream();
         eventPublisher = new EventBus(history);
     }
 

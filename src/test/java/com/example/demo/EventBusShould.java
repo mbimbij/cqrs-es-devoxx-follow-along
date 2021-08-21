@@ -10,7 +10,7 @@ public class EventBusShould {
     @Test
     void storeEvents_whenPublishEvents() {
         // GIVEN
-        IStreamEvents eventStream = new InMemoryStreamEvents();
+        IStreamEvents eventStream = new InMemoryEventStream();
         EventBus eventBus = new EventBus(eventStream);
 
         // WHEN
@@ -23,7 +23,7 @@ public class EventBusShould {
     @Test
     void callEachHandler_whenPublish() {
         // GIVEN
-        IPublishEvent eventPublisher = new EventBus(new InMemoryStreamEvents());
+        IPublishEvent eventPublisher = new EventBus(new InMemoryEventStream());
         MessageQuackedSubscriber messageQuackedEventSubscriber1 = spy(new MessageQuackedSubscriber());
         MessageQuackedSubscriber messageQuackedEventSubscriber2 = spy(new MessageQuackedSubscriber());
         MessageDeletedSubscriber messageDeletedEventSubscriber = spy(new MessageDeletedSubscriber());
