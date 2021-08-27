@@ -8,7 +8,7 @@ public class MixterApplicationShould {
     @Test
     void displayMessageInTimeline_whenQuackMessage() {
         // GIVEN
-        InMemoryEventBus eventBus = new InMemoryEventBus();
+        InMemoryEventPublisher eventBus = new InMemoryEventPublisher();
         Timeline timeline = new Timeline();
         eventBus.subscribe(timeline);
 

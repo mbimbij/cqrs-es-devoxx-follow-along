@@ -14,11 +14,11 @@ public class Message {
         });
     }
 
-    public static void quack(IPublishEvent eventPublisher, String content) {
+    public static void quack(EventPublisher eventPublisher, String content) {
         eventPublisher.publish(new MessageQuacked(content));
     }
 
-    public void delete(IPublishEvent eventPublisher) {
+    public void delete(EventPublisher eventPublisher) {
         if (!deletionProjection.isDeleted()) {
             MessageDeleted event = new MessageDeleted();
             eventPublisher.publish(event);

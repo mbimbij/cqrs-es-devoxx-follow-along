@@ -8,7 +8,7 @@ class InMemoryEventBusShould {
     @Test
     void callEachHandler_whenPublish() {
         // GIVEN
-        InMemoryEventBus eventBus = new InMemoryEventBus();
+        InMemoryEventPublisher eventBus = new InMemoryEventPublisher();
         MessageQuackedSubscriber messageQuackedSubscriber1 = new MessageQuackedSubscriber();
         MessageQuackedSubscriber messageQuackedSubscriber2 = new MessageQuackedSubscriber();
         MessageDeletedSubscriber messageDeletedSubscriber = new MessageDeletedSubscriber();

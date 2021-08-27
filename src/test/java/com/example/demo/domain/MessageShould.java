@@ -12,7 +12,7 @@ class MessageShould {
     @Test
     void raiseMessageQuacked_whenQuackMessage() {
         // GIVEN
-        InMemoryEventBus eventPublisher = new InMemoryEventBus();
+        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher();
 
         // WHEN
         Message.quack(eventPublisher, "hello");
@@ -26,7 +26,7 @@ class MessageShould {
         // GIVEN
         List<DomainEvent> eventsList = new ArrayList<>();
         eventsList.add(new MessageQuacked("hello"));
-        InMemoryEventBus eventPublisher = new InMemoryEventBus(eventsList);
+        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher(eventsList);
         AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
         Message message = new Message(aggregatePastEvents);
 
@@ -43,7 +43,7 @@ class MessageShould {
         List<DomainEvent> eventsList = new ArrayList<>();
         eventsList.add(new MessageQuacked("hello"));
         eventsList.add(new MessageDeleted());
-        InMemoryEventBus eventPublisher = new InMemoryEventBus(eventsList);
+        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher(eventsList);
         AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
         Message message = new Message(aggregatePastEvents);
 
@@ -59,7 +59,7 @@ class MessageShould {
         // GIVEN
         List<DomainEvent> eventsList = new ArrayList<>();
         eventsList.add(new MessageQuacked("hello"));
-        InMemoryEventBus eventPublisher = new InMemoryEventBus(eventsList);
+        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher(eventsList);
         AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
         Message message = new Message(aggregatePastEvents);
 
