@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.domain;
 
 public class Message {
     private IsMessageDeletedProjection deletionProjection = new IsMessageDeletedProjection();

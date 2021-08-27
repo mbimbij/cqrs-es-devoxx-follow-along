@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.domain;
 
 public class IsMessageDeletedProjection {
     private boolean isDeleted = false;

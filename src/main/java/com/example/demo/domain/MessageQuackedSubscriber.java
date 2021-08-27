@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.domain;
 
 public class MessageQuackedSubscriber implements ISubscribeToEvents<MessageQuacked> {
     private int countHandle = 0;

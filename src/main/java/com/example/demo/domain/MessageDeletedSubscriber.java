@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.domain;
 
 public class MessageDeletedSubscriber implements ISubscribeToEvents<MessageDeleted> {
     private int countHandle = 0;

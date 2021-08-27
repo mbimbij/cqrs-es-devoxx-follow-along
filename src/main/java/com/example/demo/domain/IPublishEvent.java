@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.domain;
 
 public interface IPublishEvent {
     void publish(DomainEvent domainEvent);
