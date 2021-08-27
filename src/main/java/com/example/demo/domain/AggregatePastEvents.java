@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class AggregatePastEvents {
-    private List<DomainEvent> events = new ArrayList<>();
+    private List<DomainEvent> events;
 
     public AggregatePastEvents(Collection<DomainEvent> events) {
         this.events = new ArrayList<>(events);
