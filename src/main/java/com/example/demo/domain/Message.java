@@ -25,4 +25,8 @@ public class Message {
             deletionProjection.apply(event);
         }
     }
+
+    public boolean isDeleted() {
+        return deletionProjection.isDeleted();
+    }
 }
