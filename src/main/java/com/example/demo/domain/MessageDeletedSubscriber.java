@@ -9,9 +9,10 @@ public class MessageDeletedSubscriber implements ISubscribeToEvents<MessageDelet
     }
 
     @Override
-    public boolean accept(Class<?> clazz) {
-        return MessageDeleted.class.equals(clazz);
+    public boolean accept(DomainEvent event) {
+        return event instanceof MessageDeleted;
     }
+
 
     public int getCountHandle() {
         return countHandle;

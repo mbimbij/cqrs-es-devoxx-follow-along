@@ -9,9 +9,10 @@ public class MessageQuackedSubscriber implements ISubscribeToEvents<MessageQuack
     }
 
     @Override
-    public boolean accept(Class<?> clazz) {
-        return MessageQuacked.class.equals(clazz);
+    public boolean accept(DomainEvent event) {
+        return event instanceof MessageQuacked;
     }
+
 
     public int getCountHandle() {
         return countHandle;

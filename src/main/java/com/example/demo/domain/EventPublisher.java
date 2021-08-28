@@ -8,7 +8,7 @@ public class EventPublisher {
 
     public void publish(DomainEvent domainEvent) {
         subscribers.stream()
-                .filter(subscriber -> subscriber.accept(domainEvent.getClass()))
+                .filter(subscriber -> subscriber.accept(domainEvent))
                 .forEach(subscriber -> subscriber.handle(domainEvent));
     }
 

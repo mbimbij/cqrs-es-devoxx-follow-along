@@ -12,12 +12,13 @@ public class Timeline implements ISubscribeToEvents<MessageQuacked> {
         messages.add(new TimelineMessage(messageQuacked.getContent()));
     }
 
+    @Override
+    public boolean accept(DomainEvent event) {
+        return event instanceof MessageQuacked;
+    }
+
     public Collection<TimelineMessage> getMessages() {
         return messages;
     }
 
-    @Override
-    public boolean accept(Class<?> clazz) {
-        return MessageQuacked.class.equals(clazz);
-    }
 }
