@@ -3,7 +3,7 @@ package com.example.demo.domain;
 public class QuackCounter {
     private int value;
 
-    public void handle(MessageQuacked messageQuacked) {
+    public void handle(PublicMessageQuacked publicMessageQuacked) {
         value++;
     }
 

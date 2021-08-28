@@ -3,7 +3,7 @@ package com.example.demo.rightside;
 import com.example.demo.domain.EventPublisher;
 import com.example.demo.domain.Message;
 import com.example.demo.domain.MessageDeleted;
-import com.example.demo.domain.MessageQuacked;
+import com.example.demo.domain.PublicMessageQuacked;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,11 +23,11 @@ class InMemoryEventStoreShould {
         eventPublisher.subscribe(inMemoryEventStore);
 
         // WHEN
-        Message.quack(eventPublisher, "hello");
+        Message.quackPublic(eventPublisher, "hello");
 
         // THEN
         assertThat(inMemoryEventStore.getPastEvents().getEvents())
-                .containsExactly(new MessageQuacked("hello"));
+                .containsExactly(new PublicMessageQuacked("hello"));
     }
 
     @Test
@@ -36,7 +36,7 @@ class InMemoryEventStoreShould {
         EventPublisher eventPublisher = new EventPublisher();
         InMemoryEventStore inMemoryEventStore = new InMemoryEventStore();
         eventPublisher.subscribe(inMemoryEventStore);
-        Message.quack(eventPublisher, "hello");
+        Message.quackPublic(eventPublisher, "hello");
         Message message = new Message(inMemoryEventStore.getPastEvents());
 
         // WHEN
@@ -45,7 +45,7 @@ class InMemoryEventStoreShould {
         // THEN
         assertThat(inMemoryEventStore.getPastEvents().getEvents())
                 .containsExactly(
-                        new MessageQuacked("hello"),
+                        new PublicMessageQuacked("hello"),
                         new MessageDeleted()
                 );
     }

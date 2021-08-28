@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Timeline implements ISubscribeToEvents<MessageQuacked> {
+public class Timeline implements ISubscribeToEvents<PublicMessageQuacked> {
     private List<TimelineMessage> messages = new ArrayList<>();
 
     @Override
-    public void handle(MessageQuacked messageQuacked) {
-        messages.add(new TimelineMessage(messageQuacked.getContent()));
+    public void handle(PublicMessageQuacked publicMessageQuacked) {
+        messages.add(new TimelineMessage(publicMessageQuacked.getContent()));
     }
 
     @Override
     public boolean accept(DomainEvent event) {
-        return event instanceof MessageQuacked;
+        return event instanceof PublicMessageQuacked;
     }
 
     public Collection<TimelineMessage> getMessages() {

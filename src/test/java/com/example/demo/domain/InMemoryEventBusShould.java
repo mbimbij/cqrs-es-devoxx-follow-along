@@ -17,8 +17,8 @@ class InMemoryEventBusShould {
         eventBus.subscribe(messageDeletedSubscriber);
 
         // WHEN
-        eventBus.publish(new MessageQuacked("hello"));
-        eventBus.publish(new MessageQuacked("hello2"));
+        eventBus.publish(new PublicMessageQuacked("hello"));
+        eventBus.publish(new PublicMessageQuacked("hello2"));
         eventBus.publish(new MessageDeleted());
 
         // THEN

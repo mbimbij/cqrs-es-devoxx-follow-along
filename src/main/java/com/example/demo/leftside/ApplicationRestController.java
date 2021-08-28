@@ -23,7 +23,7 @@ public class ApplicationRestController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Flux<Void> quack(@RequestBody String message) {
         log.info("received message to quack: {}", message);
-        Message.quack(eventPublisher, message);
+        Message.quackPublic(eventPublisher, message);
         return Flux.empty();
     }
 

@@ -11,7 +11,7 @@ public class TimelineShould {
         Timeline timeline = new Timeline();
 
         // WHEN
-        timeline.handle(new MessageQuacked("hello"));
+        timeline.handle(new PublicMessageQuacked("hello"));
 
         // THEN
         assertThat(timeline.getMessages()).contains(new TimelineMessage("hello"));

@@ -15,17 +15,17 @@ class MessageShould {
         InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher();
 
         // WHEN
-        Message.quack(eventPublisher, "hello");
+        Message.quackPublic(eventPublisher, "hello");
 
         // THEN
-        assertThat(eventPublisher.getEvents()).containsExactly(new MessageQuacked("hello"));
+        assertThat(eventPublisher.getEvents()).containsExactly(new PublicMessageQuacked("hello"));
     }
 
     @Test
     void raiseMessageDeleted_whenDeleteMessage() {
         // GIVEN
         List<DomainEvent> eventsList = new ArrayList<>();
-        eventsList.add(new MessageQuacked("hello"));
+        eventsList.add(new PublicMessageQuacked("hello"));
         InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher(eventsList);
         AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
         Message message = new Message(aggregatePastEvents);
@@ -41,7 +41,7 @@ class MessageShould {
     void notRaiseMessageDelete_whenMessageAlreadyDeleted() {
         // GIVEN
         List<DomainEvent> eventsList = new ArrayList<>();
-        eventsList.add(new MessageQuacked("hello"));
+        eventsList.add(new PublicMessageQuacked("hello"));
         eventsList.add(new MessageDeleted());
         InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher(eventsList);
         AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
@@ -58,7 +58,7 @@ class MessageShould {
     void notRaiseMessageDeleted_whenCallDeleteMessageTwice() {
         // GIVEN
         List<DomainEvent> eventsList = new ArrayList<>();
-        eventsList.add(new MessageQuacked("hello"));
+        eventsList.add(new PublicMessageQuacked("hello"));
         InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher(eventsList);
         AggregatePastEvents aggregatePastEvents = new AggregatePastEvents(eventsList);
         Message message = new Message(aggregatePastEvents);
@@ -69,5 +69,19 @@ class MessageShould {
 
         // THEN
         assertThat(eventPublisher.getEvents()).filteredOn(domainEvent -> domainEvent instanceof MessageDeleted).hasSize(1);
+    }
+
+    @Test
+    void raiseMessageQuackedForId1_whenQuackMessageWithId1() {
+        // GIVEN
+        InMemoryEventPublisher eventPublisher = new InMemoryEventPublisher();
+        int messageId = 1;
+        Message message = new Message(messageId);
+
+        // WHEN
+        message.quack(eventPublisher, "hello");
+
+        // THEN
+        assertThat(eventPublisher.getEvents()).containsExactly(new MessageQuacked(messageId, "hello"));
     }
 }

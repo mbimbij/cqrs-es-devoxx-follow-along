@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 public class Message {
+    private int id;
     private IsMessageDeletedProjection deletionProjection = new IsMessageDeletedProjection();
 
     public Message() {
@@ -14,8 +15,12 @@ public class Message {
         });
     }
 
-    public static void quack(EventPublisher eventPublisher, String content) {
-        eventPublisher.publish(new MessageQuacked(content));
+    public Message(int id) {
+        this.id = id;
+    }
+
+    public static void quackPublic(EventPublisher eventPublisher, String content) {
+        eventPublisher.publish(new PublicMessageQuacked(content));
     }
 
     public void delete(EventPublisher eventPublisher) {
@@ -28,5 +33,9 @@ public class Message {
 
     public boolean isDeleted() {
         return deletionProjection.isDeleted();
+    }
+
+    public void quack(EventPublisher eventPublisher, String content) {
+        eventPublisher.publish(new MessageQuacked(id, content));
     }
 }

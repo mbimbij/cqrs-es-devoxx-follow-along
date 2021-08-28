@@ -13,7 +13,7 @@ public class MixterApplicationShould {
         eventBus.subscribe(timeline);
 
         // WHEN
-        Message.quack(eventBus, "hello");
+        Message.quackPublic(eventBus, "hello");
 
         // THEN
         assertThat(timeline.getMessages()).containsExactly(new TimelineMessage("hello"));

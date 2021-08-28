@@ -11,7 +11,7 @@ public class QuackCounterShould {
         QuackCounter quackCounter = new QuackCounter();
 
         // WHEN
-        quackCounter.handle(new MessageQuacked("hello"));
+        quackCounter.handle(new PublicMessageQuacked("hello"));
 
         // THEN
         assertThat(quackCounter.getValue()).isEqualTo(1);
@@ -21,7 +21,7 @@ public class QuackCounterShould {
     void decrement_whenMessageDeleted() {
         // GIVEN
         QuackCounter quackCounter = new QuackCounter();
-        quackCounter.handle(new MessageQuacked("hello"));
+        quackCounter.handle(new PublicMessageQuacked("hello"));
 
         // WHEN
         quackCounter.handle(new MessageDeleted());

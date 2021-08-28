@@ -1,16 +1,16 @@
 package com.example.demo.domain;
 
-public class MessageQuackedSubscriber implements ISubscribeToEvents<MessageQuacked> {
+public class MessageQuackedSubscriber implements ISubscribeToEvents<PublicMessageQuacked> {
     private int countHandle = 0;
 
     @Override
-    public void handle(MessageQuacked event) {
+    public void handle(PublicMessageQuacked event) {
         countHandle++;
     }
 
     @Override
     public boolean accept(DomainEvent event) {
-        return event instanceof MessageQuacked;
+        return event instanceof PublicMessageQuacked;
     }
 
 

@@ -1,7 +1,6 @@
 package com.example.demo.domain;
 
 import com.example.demo.rightside.InMemoryEventStore;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -27,7 +26,7 @@ class MessageRepositoryShould {
     void returnANotDeletedMessage_whenNoMessageDeletedEmitted() {
         // GIVEN
         InMemoryEventStore eventStore = new InMemoryEventStore();
-        eventStore.handle(new MessageQuacked("hello"));
+        eventStore.handle(new PublicMessageQuacked("hello"));
         MessageRepository messageRepository = new MessageRepository(eventStore);
 
         // WHEN
@@ -42,7 +41,7 @@ class MessageRepositoryShould {
     void returnADeletedMessage_whenAMessageDeletedWasEmitted() {
         // GIVEN
         InMemoryEventStore eventStore = new InMemoryEventStore();
-        eventStore.handle(new MessageQuacked("hello"));
+        eventStore.handle(new PublicMessageQuacked("hello"));
         eventStore.handle(new MessageDeleted());
         MessageRepository messageRepository = new MessageRepository(eventStore);
 
