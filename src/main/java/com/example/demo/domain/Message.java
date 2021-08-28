@@ -4,9 +4,6 @@ public class Message {
     private int id;
     private IsMessageDeletedProjection deletionProjection = new IsMessageDeletedProjection();
 
-    public Message() {
-    }
-
     public Message(AggregatePastEvents pastAggregatePastEvents) {
         pastAggregatePastEvents.getEvents().forEach(pastEvent -> {
             if (pastEvent instanceof MessageDeleted) {
