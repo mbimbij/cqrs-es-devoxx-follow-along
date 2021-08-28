@@ -1,8 +1,8 @@
 package com.example.demo.rightside;
 
 import com.example.demo.domain.EventPublisher;
-import com.example.demo.domain.Message;
-import com.example.demo.domain.MessageDeleted;
+import com.example.demo.domain.withid.Message;
+import com.example.demo.domain.PublicMessageDeleted;
 import com.example.demo.domain.PublicMessageQuacked;
 import org.junit.jupiter.api.Test;
 
@@ -40,13 +40,13 @@ class InMemoryEventStoreShould {
         Message message = new Message(inMemoryEventStore.getPastEvents());
 
         // WHEN
-        message.delete(eventPublisher);
+        message.deletePublic(eventPublisher);
 
         // THEN
         assertThat(inMemoryEventStore.getPastEvents().getEvents())
                 .containsExactly(
                         new PublicMessageQuacked("hello"),
-                        new MessageDeleted()
+                        new PublicMessageDeleted()
                 );
     }
 }

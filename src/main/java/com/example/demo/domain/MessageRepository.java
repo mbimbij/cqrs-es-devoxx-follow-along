@@ -1,5 +1,6 @@
 package com.example.demo.domain;
 
+import com.example.demo.domain.withid.Message;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;

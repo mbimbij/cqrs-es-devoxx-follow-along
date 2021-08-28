@@ -1,5 +1,6 @@
 package com.example.demo.domain;
 
+import com.example.demo.domain.withid.Message;
 import com.example.demo.rightside.InMemoryEventStore;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ class MessageRepositoryShould {
         // GIVEN
         InMemoryEventStore eventStore = new InMemoryEventStore();
         eventStore.handle(new PublicMessageQuacked("hello"));
-        eventStore.handle(new MessageDeleted());
+        eventStore.handle(new PublicMessageDeleted());
         MessageRepository messageRepository = new MessageRepository(eventStore);
 
         // WHEN

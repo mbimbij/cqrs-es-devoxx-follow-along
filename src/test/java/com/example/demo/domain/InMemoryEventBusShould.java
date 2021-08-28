@@ -19,7 +19,7 @@ class InMemoryEventBusShould {
         // WHEN
         eventBus.publish(new PublicMessageQuacked("hello"));
         eventBus.publish(new PublicMessageQuacked("hello2"));
-        eventBus.publish(new MessageDeleted());
+        eventBus.publish(new PublicMessageDeleted());
 
         // THEN
         assertSoftly(softAssertions -> {

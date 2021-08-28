@@ -24,7 +24,7 @@ public class QuackCounterShould {
         quackCounter.handle(new PublicMessageQuacked("hello"));
 
         // WHEN
-        quackCounter.handle(new MessageDeleted());
+        quackCounter.handle(new PublicMessageDeleted());
 
         // THEN
         assertThat(quackCounter.getValue()).isEqualTo(0);

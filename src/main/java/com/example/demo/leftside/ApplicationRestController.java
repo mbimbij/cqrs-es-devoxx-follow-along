@@ -1,7 +1,7 @@
 package com.example.demo.leftside;
 
 import com.example.demo.domain.EventPublisher;
-import com.example.demo.domain.Message;
+import com.example.demo.domain.withid.Message;
 import com.example.demo.domain.Timeline;
 import com.example.demo.domain.TimelineMessage;
 import lombok.extern.slf4j.Slf4j;

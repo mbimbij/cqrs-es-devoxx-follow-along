@@ -11,7 +11,7 @@ public class QuackCounter {
         return value;
     }
 
-    public void handle(MessageDeleted messageDeleted) {
+    public void handle(PublicMessageDeleted publicMessageDeleted) {
         value--;
     }
 }
