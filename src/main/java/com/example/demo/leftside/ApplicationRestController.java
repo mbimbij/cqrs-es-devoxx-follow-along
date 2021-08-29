@@ -1,9 +1,6 @@
 package com.example.demo.leftside;
 
-import com.example.demo.domain.EventPublisher;
-import com.example.demo.domain.withid.Message;
-import com.example.demo.domain.Timeline;
-import com.example.demo.domain.TimelineMessage;
+import com.example.demo.domain.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,21 +12,28 @@ import reactor.core.publisher.Flux;
 @Slf4j
 public class ApplicationRestController {
     @Autowired
+    private MessageRepository messageRepository;
+    @Autowired
     private EventPublisher eventPublisher;
     @Autowired
-    private Timeline timeline;
+    private Timelines timelines;
 
-    @PostMapping("/quack")
+    @PostMapping("/quack/{messageId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Flux<Void> quack(@RequestBody String message) {
-        log.info("received message to quack: {}", message);
-        Message.quackPublic(eventPublisher, message);
+    public Flux<Void> quack(@PathVariable("messageId") int messageId, @RequestBody String content) {
+        log.info("received message to quack for message {}: {}", messageId, content);
+        messageRepository.getMessageById(messageId)
+                .orElse(new Message(messageId))
+                .quack(eventPublisher, content);
         return Flux.empty();
     }
 
-    @GetMapping(value = "/timeline", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/timeline/{messageId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Flux<TimelineMessage> timeline() {
-        return Flux.fromIterable(timeline.getMessages());
+    public Flux<TimelineMessage> timeline(@PathVariable("messageId") int messageId) {
+        return timelines.getTimeline(messageId)
+                .map(Timeline::getMessages)
+                .map(Flux::fromIterable)
+                .orElse(Flux.empty());
     }
 }

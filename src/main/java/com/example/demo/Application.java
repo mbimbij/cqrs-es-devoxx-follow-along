@@ -1,8 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.domain.EventPublisher;
-import com.example.demo.domain.EventStore;
-import com.example.demo.domain.Timeline;
+import com.example.demo.domain.*;
 import com.example.demo.rightside.InMemoryEventStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -23,8 +21,8 @@ public class Application implements ApplicationRunner {
     }
 
     @Bean
-    public Timeline timeline() {
-        return new Timeline();
+    public Timelines timeline() {
+        return new Timelines();
     }
 
     @Bean
@@ -32,18 +30,23 @@ public class Application implements ApplicationRunner {
         return new InMemoryEventStore();
     }
 
+    @Bean
+    public MessageRepository messageRepository(EventStore eventStore) {
+        return new MessageRepository(eventStore);
+    }
+
     @Autowired
     private EventPublisher eventPublisher;
 
     @Autowired
-    private Timeline timeline;
+    private Timelines timelines;
 
     @Autowired
     private EventStore eventStore;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        eventPublisher.subscribe(timeline);
+        eventPublisher.subscribe(timelines);
         eventPublisher.subscribe(eventStore);
     }
 }

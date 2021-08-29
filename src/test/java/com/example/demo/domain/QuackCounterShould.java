@@ -1,32 +1,40 @@
 package com.example.demo.domain;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class QuackCounterShould {
     @Test
     void increment_whenMessageQuacked() {
         // GIVEN
-        QuackCounter quackCounter = new QuackCounter();
+        QuackCounter quackCounter = new QuackCounter(1);
+        QuackCounter quackCounter2 = new QuackCounter(2);
 
         // WHEN
-        quackCounter.handle(new PublicMessageQuacked("hello"));
+        quackCounter.handle(new MessageQuacked(1, "hello"));
 
         // THEN
-        assertThat(quackCounter.getValue()).isEqualTo(1);
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(quackCounter.getValue()).isEqualTo(1);
+            softAssertions.assertThat(quackCounter2.getValue()).isEqualTo(0);
+        });
     }
 
     @Test
     void decrement_whenMessageDeleted() {
         // GIVEN
-        QuackCounter quackCounter = new QuackCounter();
-        quackCounter.handle(new PublicMessageQuacked("hello"));
+        QuackCounter quackCounter = new QuackCounter(1);
+        QuackCounter quackCounter2 = new QuackCounter(2);
+        quackCounter.handle(new MessageQuacked(1, "hello"));
+        quackCounter.handle(new MessageQuacked(2, "world"));
 
         // WHEN
-        quackCounter.handle(new PublicMessageDeleted());
+        quackCounter.handle(new MessageDeleted(1));
 
         // THEN
-        assertThat(quackCounter.getValue()).isEqualTo(0);
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(quackCounter.getValue()).isEqualTo(1);
+            softAssertions.assertThat(quackCounter2.getValue()).isEqualTo(0);
+        });
     }
 }

@@ -8,10 +8,10 @@ public class TimelineShould {
     @Test
     void displayMessage_whenMessageQuacked() {
         // GIVEN
-        Timeline timeline = new Timeline();
+        Timeline timeline = new Timeline(1);
 
         // WHEN
-        timeline.handle(new PublicMessageQuacked("hello"));
+        timeline.handle(new MessageQuacked(1, "hello"));
 
         // THEN
         assertThat(timeline.getMessages()).contains(new TimelineMessage("hello"));

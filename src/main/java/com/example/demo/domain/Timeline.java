@@ -1,20 +1,24 @@
 package com.example.demo.domain;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Timeline implements ISubscribeToEvents<PublicMessageQuacked> {
+@RequiredArgsConstructor
+public class Timeline implements ISubscribeToEvents<MessageQuacked> {
+    private final int messageId;
     private List<TimelineMessage> messages = new ArrayList<>();
 
     @Override
-    public void handle(PublicMessageQuacked publicMessageQuacked) {
-        messages.add(new TimelineMessage(publicMessageQuacked.getContent()));
+    public void handle(MessageQuacked messageQuacked) {
+        messages.add(new TimelineMessage(messageQuacked.getContent()));
     }
 
     @Override
     public boolean accept(DomainEvent event) {
-        return event instanceof PublicMessageQuacked;
+        return event instanceof MessageQuacked && ((MessageQuacked) event).getMessageId() == messageId;
     }
 
     public Collection<TimelineMessage> getMessages() {

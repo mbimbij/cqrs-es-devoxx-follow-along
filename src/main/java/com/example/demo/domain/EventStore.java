@@ -1,5 +1,5 @@
 package com.example.demo.domain;
 
 public interface EventStore extends ISubscribeToEvents<DomainEvent> {
-    AggregatePastEvents getPastEvents();
+    AggregatePastEvents getPastEvents(int messageId);
 }

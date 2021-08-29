@@ -4,15 +4,16 @@ import com.example.demo.domain.AggregatePastEvents;
 import com.example.demo.domain.DomainEvent;
 import com.example.demo.domain.EventStore;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryEventStore implements EventStore {
-    private List<DomainEvent> events = new ArrayList<>();
+    private Map<Integer, Collection<DomainEvent>> events = new HashMap<>();
 
     @Override
     public void handle(DomainEvent event) {
-        events.add(event);
+        int messageId = event.getMessageId();
+        events.putIfAbsent(messageId, new ArrayList<>());
+        events.get(messageId).add(event);
     }
 
     @Override
@@ -22,7 +23,7 @@ public class InMemoryEventStore implements EventStore {
 
 
     @Override
-    public AggregatePastEvents getPastEvents() {
-        return new AggregatePastEvents(events);
+    public AggregatePastEvents getPastEvents(int messageId) {
+        return new AggregatePastEvents(messageId, events.getOrDefault(messageId, Collections.emptyList()));
     }
 }

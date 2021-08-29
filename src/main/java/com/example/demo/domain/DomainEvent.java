@@ -1,4 +1,10 @@
 package com.example.demo.domain;
 
-public interface DomainEvent {
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
+public abstract class DomainEvent {
+    protected int messageId;
 }

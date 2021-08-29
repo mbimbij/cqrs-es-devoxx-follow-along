@@ -1,33 +1,30 @@
 package com.example.demo.rightside;
 
 import com.example.demo.domain.EventPublisher;
-import com.example.demo.domain.withid.Message;
-import com.example.demo.domain.PublicMessageDeleted;
-import com.example.demo.domain.PublicMessageQuacked;
+import com.example.demo.domain.Message;
+import com.example.demo.domain.MessageDeleted;
+import com.example.demo.domain.MessageQuacked;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class InMemoryEventStoreShould {
-    @Test
-    void containsNoEvent_whenInitialized() {
-        InMemoryEventStore inMemoryEventStore = new InMemoryEventStore();
-        assertThat(inMemoryEventStore.getPastEvents().getEvents()).isEmpty();
-    }
 
     @Test
     void containsMessageQuacked_whenQuackMessage() {
         // GIVEN
+        Message message = new Message(1);
         EventPublisher eventPublisher = new EventPublisher();
         InMemoryEventStore inMemoryEventStore = new InMemoryEventStore();
         eventPublisher.subscribe(inMemoryEventStore);
 
         // WHEN
-        Message.quackPublic(eventPublisher, "hello");
+        message.quack(eventPublisher, "hello");
 
         // THEN
-        assertThat(inMemoryEventStore.getPastEvents().getEvents())
-                .containsExactly(new PublicMessageQuacked("hello"));
+        assertThat(inMemoryEventStore.getPastEvents(1).getEvents())
+                .containsExactly(new MessageQuacked(1, "hello"));
     }
 
     @Test
@@ -36,17 +33,20 @@ class InMemoryEventStoreShould {
         EventPublisher eventPublisher = new EventPublisher();
         InMemoryEventStore inMemoryEventStore = new InMemoryEventStore();
         eventPublisher.subscribe(inMemoryEventStore);
-        Message.quackPublic(eventPublisher, "hello");
-        Message message = new Message(inMemoryEventStore.getPastEvents());
+        Message message1 = new Message(1);
+        message1.quack(eventPublisher, "hello");
 
         // WHEN
-        message.deletePublic(eventPublisher);
+        message1.delete(eventPublisher);
 
         // THEN
-        assertThat(inMemoryEventStore.getPastEvents().getEvents())
-                .containsExactly(
-                        new PublicMessageQuacked("hello"),
-                        new PublicMessageDeleted()
-                );
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(inMemoryEventStore.getPastEvents(1).getEvents())
+                    .containsExactly(
+                            new MessageQuacked(1, "hello"),
+                            new MessageDeleted(1)
+                    );
+            softAssertions.assertThat(inMemoryEventStore.getPastEvents(2).getEvents()).isEmpty();
+        });
     }
 }

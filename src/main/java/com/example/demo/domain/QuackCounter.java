@@ -1,9 +1,13 @@
 package com.example.demo.domain;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class QuackCounter {
+    private final int messageId;
     private int value;
 
-    public void handle(PublicMessageQuacked publicMessageQuacked) {
+    public void handle(MessageQuacked publicMessageQuacked) {
         value++;
     }
 
@@ -11,7 +15,7 @@ public class QuackCounter {
         return value;
     }
 
-    public void handle(PublicMessageDeleted publicMessageDeleted) {
+    public void handle(MessageDeleted publicMessageDeleted) {
         value--;
     }
 }
