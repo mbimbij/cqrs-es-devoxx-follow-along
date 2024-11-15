@@ -21,9 +21,9 @@ public class EventBusShould {
     void call_each_handler_when_publish_event() {
         // GIVEN
         EventBus eventBus = new EventBus(new InMemoryEventStream());
-        EventSubscriber<MessageQuacked> subscriber1 = new EventSubscriber<>();
-        EventSubscriber<MessageQuacked> subscriber2 = new EventSubscriber<>();
-        EventSubscriber<MessageQuacked> subscriber3 = new EventSubscriber<>();
+        EventSubscriber<MessageQuacked> subscriber1 = new EventSubscriber<>(MessageQuacked.class);
+        EventSubscriber<MessageQuacked> subscriber2 = new EventSubscriber<>(MessageQuacked.class);
+        EventSubscriber<MessageQuacked> subscriber3 = new EventSubscriber<>(MessageQuacked.class);
         eventBus.subscribe(subscriber1);
         eventBus.subscribe(subscriber2);
         eventBus.subscribe(subscriber3);

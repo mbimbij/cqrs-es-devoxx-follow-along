@@ -12,7 +12,8 @@ class MessageShould {
     @Test
     void raise_message_quacked_when_quack_message() {
         InMemoryEventStream history = new InMemoryEventStream();
-        Message.quack(history, "Hello");
+        EventBus eventBus = new EventBus(history);
+        Message.quack(eventBus, "Hello");
         assertThat(history.getEvents())
                 .containsExactly(new MessageQuacked("Hello"));
     }

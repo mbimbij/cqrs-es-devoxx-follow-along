@@ -1,7 +1,10 @@
 package com.example.demo;
 
-public class EventSubscriber<T extends IDomainEvent> {
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+public class EventSubscriber<T extends IDomainEvent> {
+    private final Class<T> type;
     private boolean called = false;
 
     public boolean wasCalled() {
@@ -10,5 +13,9 @@ public class EventSubscriber<T extends IDomainEvent> {
 
     public void handle(T domainEvent) {
         called = true;
+    }
+
+    public boolean canHandle(IDomainEvent domainEvent) {
+        return type.isAssignableFrom(domainEvent.getClass());
     }
 }

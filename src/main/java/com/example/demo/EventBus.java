@@ -10,9 +10,10 @@ public class EventBus {
     private final IEventStream stream;
     private List<EventSubscriber<? extends IDomainEvent>> subscribers = new ArrayList<>();
 
-    public void publish(IDomainEvent domainEvent) {
+    public <T extends IDomainEvent> void publish(T domainEvent) {
         stream.add(domainEvent);
-        subscribers.forEach(s -> {
+        subscribers.stream().filter(s -> s.canHandle(domainEvent))
+                .forEach(s -> {
             @SuppressWarnings("unchecked")
             EventSubscriber<IDomainEvent> castedSubscriber = (EventSubscriber<IDomainEvent>) s;
             castedSubscriber.handle(domainEvent);

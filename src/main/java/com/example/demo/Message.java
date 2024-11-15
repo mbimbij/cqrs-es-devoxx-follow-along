@@ -11,8 +11,8 @@ public class Message {
         }
     }
 
-    public static void quack(IEventStream history, String message) {
-        history.add(new MessageQuacked(message));
+    public static void quack(EventBus eventBus, String message) {
+        eventBus.publish(new MessageQuacked(message));
     }
 
     public void delete(IEventStream history) {
