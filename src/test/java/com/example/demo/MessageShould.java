@@ -11,9 +11,10 @@ class MessageShould {
 
     @Test
     void raise_message_quacked_when_quack_message() {
-        List<IDomainEvent> history = new ArrayList<>();
+        InMemoryEventStream history = new InMemoryEventStream();
         Message.quack(history, "Hello");
-        assertThat(history).containsExactly(new MessageQuacked("Hello"));
+        assertThat(history.getEvents())
+                .containsExactly(new MessageQuacked("Hello"));
     }
 
     @Test
@@ -22,9 +23,12 @@ class MessageShould {
         history.add(new MessageQuacked("Hello"));
         Message message = new Message(history);
 
-        message.delete(history);
+        InMemoryEventStream newHistory = new InMemoryEventStream();
+        newHistory.add(new MessageQuacked("Hello"));
 
-        assertThat(history).containsExactly(new MessageQuacked("Hello"),
+        message.delete(newHistory);
+
+        assertThat(newHistory.getEvents()).containsExactly(new MessageQuacked("Hello"),
                 new MessageDeleted());
     }
 
@@ -35,9 +39,13 @@ class MessageShould {
         history.add(new MessageDeleted());
         Message message = new Message(history);
 
-        message.delete(history);
+        InMemoryEventStream newHistory = new InMemoryEventStream();
+        newHistory.add(new MessageQuacked("Hello"));
+        newHistory.add(new MessageDeleted());
 
-        assertThat(history).containsExactly(
+        message.delete(newHistory);
+
+        assertThat(newHistory.getEvents()).containsExactly(
                 new MessageQuacked("Hello"),
                 new MessageDeleted());
     }
@@ -48,10 +56,13 @@ class MessageShould {
         history.add(new MessageQuacked("Hello"));
         Message message = new Message(history);
 
-        message.delete(history);
-        message.delete(history);
+        InMemoryEventStream newHistory = new InMemoryEventStream();
+        newHistory.add(new MessageQuacked("Hello"));
 
-        assertThat(history).containsExactly(
+        message.delete(newHistory);
+        message.delete(newHistory);
+
+        assertThat(newHistory.getEvents()).containsExactly(
                 new MessageQuacked("Hello"),
                 new MessageDeleted());
     }

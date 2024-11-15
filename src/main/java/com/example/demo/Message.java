@@ -11,11 +11,11 @@ public class Message {
         }
     }
 
-    public static void quack(List<IDomainEvent> history, String message) {
+    public static void quack(IEventStream history, String message) {
         history.add(new MessageQuacked(message));
     }
 
-    public void delete(List<IDomainEvent> history) {
+    public void delete(IEventStream history) {
         if(isDeleted) {
             return;
         }
