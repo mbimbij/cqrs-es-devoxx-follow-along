@@ -3,7 +3,7 @@ package com.example.demo;
 import java.util.List;
 
 public class Message {
-    private boolean isDeleted = false;
+    private final DecisionProjection decisionProjection = new DecisionProjection();
 
     public Message(List<IDomainEvent> history) {
         for (IDomainEvent event : history) {
@@ -16,7 +16,7 @@ public class Message {
     }
 
     public void delete(IEventStream history) {
-        if(isDeleted) {
+        if(decisionProjection.isDeleted()) {
             return;
         }
         MessageDeleted messageDeleted = new MessageDeleted();
@@ -25,8 +25,6 @@ public class Message {
     }
 
     private void apply(IDomainEvent event) {
-        if (event instanceof MessageDeleted) {
-            this.isDeleted = true;
-        }
+        decisionProjection.apply(event);
     }
 }
