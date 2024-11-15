@@ -20,10 +20,22 @@ class MessageShould {
     void raise_message_deleted_when_delete_message() {
         List<Object> history = new ArrayList<>();
         history.add(new MessageQuacked("Hello"));
-        Message message = new Message();
+        Message message = new Message(history);
 
         message.delete(history);
 
+        assertThat(history).containsExactly(new MessageQuacked("Hello"),
+                new MessageDeleted());
+    }
+
+    @Test
+    void not_raise_message_deleted_when_delete_deleted_message() {
+        List<Object> history = new ArrayList<>();
+        history.add(new MessageQuacked("Hello"));
+        history.add(new MessageDeleted());
+        Message message = new Message(history);
+
+        message.delete(history);
         assertThat(history).containsExactly(new MessageQuacked("Hello"),
                 new MessageDeleted());
     }
