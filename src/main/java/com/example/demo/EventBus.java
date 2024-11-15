@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class EventBus {
+public class EventBus implements IEventPublisher {
     private final IEventStream stream;
     private List<EventSubscriber<? extends IDomainEvent>> subscribers = new ArrayList<>();
 
+    @Override
     public <T extends IDomainEvent> void publish(T domainEvent) {
         stream.add(domainEvent);
         subscribers.stream().filter(s -> s.canHandle(domainEvent))

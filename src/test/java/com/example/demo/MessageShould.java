@@ -22,48 +22,42 @@ class MessageShould {
     void raise_message_deleted_when_delete_message() {
         List<IDomainEvent> history = new ArrayList<>();
         history.add(new MessageQuacked("Hello"));
-        Message message = new Message(history);
+        InMemoryEventStream eventStream = new InMemoryEventStream(history);
+        EventBus eventBus = new EventBus(eventStream);
+        Message message = new Message(eventStream);
 
-        InMemoryEventStream newHistory = new InMemoryEventStream();
-        newHistory.add(new MessageQuacked("Hello"));
+        message.delete(eventBus);
 
-        message.delete(newHistory);
-
-        assertThat(newHistory.getEvents()).containsExactly(new MessageQuacked("Hello"),
+        assertThat(eventStream.getEvents()).containsExactly(new MessageQuacked("Hello"),
                 new MessageDeleted());
     }
 
     @Test
     void not_raise_message_deleted_when_delete_deleted_message() {
-        List<IDomainEvent> history = new ArrayList<>();
-        history.add(new MessageQuacked("Hello"));
-        history.add(new MessageDeleted());
-        Message message = new Message(history);
+        InMemoryEventStream eventStream = new InMemoryEventStream();
+        eventStream.add(new MessageQuacked("Hello"));
+        eventStream.add(new MessageDeleted());
+        Message message = new Message(eventStream);
+        EventBus eventBus = new EventBus(eventStream);
 
-        InMemoryEventStream newHistory = new InMemoryEventStream();
-        newHistory.add(new MessageQuacked("Hello"));
-        newHistory.add(new MessageDeleted());
+        message.delete(eventBus);
 
-        message.delete(newHistory);
-
-        assertThat(newHistory.getEvents()).containsExactly(
+        assertThat(eventStream.getEvents()).containsExactly(
                 new MessageQuacked("Hello"),
                 new MessageDeleted());
     }
 
     @Test
     void not_raise_message_deleted_a_second_time_when_delete_twice() {
-        List<IDomainEvent> history = new ArrayList<>();
-        history.add(new MessageQuacked("Hello"));
-        Message message = new Message(history);
+        InMemoryEventStream eventStream = new InMemoryEventStream();
+        eventStream.add(new MessageQuacked("Hello"));
+        Message message = new Message(eventStream);
+        EventBus eventBus = new EventBus(eventStream);
 
-        InMemoryEventStream newHistory = new InMemoryEventStream();
-        newHistory.add(new MessageQuacked("Hello"));
+        message.delete(eventBus);
+        message.delete(eventBus);
 
-        message.delete(newHistory);
-        message.delete(newHistory);
-
-        assertThat(newHistory.getEvents()).containsExactly(
+        assertThat(eventStream.getEvents()).containsExactly(
                 new MessageQuacked("Hello"),
                 new MessageDeleted());
     }
