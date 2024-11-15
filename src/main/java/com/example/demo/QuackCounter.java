@@ -15,18 +15,18 @@ public class QuackCounter {
         history.forEach(this::handle);
     }
 
-    private void handle(IDomainEvent event) {
+    public void handle(IDomainEvent event) {
         switch (event){
             case MessageDeleted messageDeleted -> handle(messageDeleted);
             case MessageQuacked messageQuacked -> handle(messageQuacked);
         }
     }
 
-    public void handle(MessageDeleted messageDeleted) {
+    private void handle(MessageDeleted messageDeleted) {
         value--;
     }
 
-    public void handle(MessageQuacked messageQuacked) {
+    private void handle(MessageQuacked messageQuacked) {
         value++;
     }
 }
