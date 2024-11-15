@@ -1,4 +1,4 @@
 package com.example.demo;
 
-public interface IDomainEvent {
+public sealed interface IDomainEvent permits MessageQuacked, MessageDeleted {
 }
